@@ -19,7 +19,9 @@ type Config struct {
 	// Lidas de ALLOWED_ORIGIN, separadas por vírgula.
 	// Vazio = CORS desativado (frontend servido pela mesma origem).
 	AllowedOrigins []string
-	// Marca o cookie de sessão como Secure (exige HTTPS). Use true em produção.
+	// Marca o cookie de sessão como Secure e SameSite=None (exige HTTPS;
+	// permite front e API em domínios diferentes). Use true em produção.
+	// Com false, o cookie usa SameSite=Lax.
 	CookieSecure bool
 	// Tempo de vida de uma sessão.
 	SessionTTL time.Duration

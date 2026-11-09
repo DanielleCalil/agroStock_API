@@ -120,7 +120,7 @@ func (s *Server) iniciarSessao(w http.ResponseWriter, r *http.Request, id int, l
 		Expires:  ses.Expira,
 		HttpOnly: true, // inacessível ao JavaScript
 		Secure:   s.cfg.CookieSecure,
-		SameSite: http.SameSiteLaxMode,
+		SameSite: s.sameSiteCookie(),
 	})
 	return nil
 }
@@ -148,6 +148,18 @@ func (s *Server) apagarCookie(w http.ResponseWriter) {
 		MaxAge:   -1,
 		HttpOnly: true,
 		Secure:   s.cfg.CookieSecure,
-		SameSite: http.SameSiteLaxMode,
+		SameSite: s.sameSiteCookie(),
 	})
+}
+
+// sameSiteCookie define o SameSite do cookie de sessão.
+// Em produção (COOKIE_SECURE=true) o frontend fica em outro domínio
+// (ex: Vercel -> Render), então o cookie precisa de SameSite=None para ser
+// enviado entre sites — e o navegador só aceita None junto com Secure.
+// Em desenvolvimento via http, usa Lax (None sem Secure seria rejeitado).
+func (s *Server) sameSiteCookie() http.SameSite {
+	if s.cfg.CookieSecure {
+		return http.SameSiteNoneMode
+	}
+	return http.SameSiteLaxMode
 }
