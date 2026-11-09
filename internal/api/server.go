@@ -22,7 +22,7 @@ func NewServer(db *sql.DB, sessoes *sessao.Store, cfg config.Config) *Server {
 	return &Server{db: db, sessoes: sessoes, cfg: cfg, hoje: time.Now}
 }
 
-// Handler monta todas as rotas com os middlewares globais.
+// Handler monta todas as rotas com os middlewares de log e recuperação.
 func (s *Server) Handler() http.Handler {
 	mux := http.NewServeMux()
 
@@ -49,7 +49,8 @@ func (s *Server) Handler() http.Handler {
 	mux.Handle("GET /saldos", s.autenticado(s.listarSaldos))
 	mux.Handle("GET /alertas", s.autenticado(s.listarAlertas))
 
-	return recuperar(logRequisicoes(s.cors(mux)))
+	// O CORS é aplicado por fora, no main().
+	return recuperar(logRequisicoes(mux))
 }
 
 func (s *Server) health(w http.ResponseWriter, r *http.Request) {
@@ -58,27 +59,6 @@ func (s *Server) health(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	escreverJSON(w, http.StatusOK, map[string]string{"status": "ok"})
-}
-
-// cors libera o frontend (ALLOWED_ORIGIN) a chamar a API enviando o cookie.
-func (s *Server) cors(next http.Handler) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		origem := r.Header.Get("Origin")
-		if origem != "" && s.cfg.AllowedOrigin != "" && origem == s.cfg.AllowedOrigin {
-			h := w.Header()
-			h.Set("Access-Control-Allow-Origin", origem)
-			h.Set("Access-Control-Allow-Credentials", "true")
-			h.Add("Vary", "Origin")
-			if r.Method == http.MethodOptions && r.Header.Get("Access-Control-Request-Method") != "" {
-				h.Set("Access-Control-Allow-Methods", "GET, POST, DELETE, OPTIONS")
-				h.Set("Access-Control-Allow-Headers", "Content-Type")
-				h.Set("Access-Control-Max-Age", "600")
-				w.WriteHeader(http.StatusNoContent)
-				return
-			}
-		}
-		next.ServeHTTP(w, r)
-	})
 }
 
 type statusRecorder struct {

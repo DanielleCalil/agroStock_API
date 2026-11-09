@@ -107,7 +107,7 @@ func TestValidarMovimentacao(t *testing.T) {
 }
 
 func novoServidorTeste() *Server {
-	return NewServer(nil, sessao.NewStore(time.Hour), config.Config{AllowedOrigin: "http://localhost:5173"})
+	return NewServer(nil, sessao.NewStore(time.Hour), config.Config{AllowedOrigins: []string{"http://localhost:5173"}})
 }
 
 func TestRotasProtegidasExigemSessao(t *testing.T) {
@@ -192,7 +192,14 @@ func TestCadastroUsuarioValidaAntesDoBanco(t *testing.T) {
 }
 
 func TestPreflightCORS(t *testing.T) {
-	h := novoServidorTeste().Handler()
+	// Mesma montagem do main(): CORS envolvendo o roteador.
+	h := CORS(CORSConfig{
+		Origens:     []string{"http://localhost:5173"},
+		Metodos:     []string{http.MethodGet, http.MethodPost, http.MethodDelete, http.MethodOptions},
+		Cabecalhos:  []string{"Content-Type"},
+		Credenciais: true,
+		MaxAge:      10 * time.Minute,
+	})(novoServidorTeste().Handler())
 	req := httptest.NewRequest("OPTIONS", "/movimentacoes", nil)
 	req.Header.Set("Origin", "http://localhost:5173")
 	req.Header.Set("Access-Control-Request-Method", "POST")

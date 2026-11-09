@@ -47,9 +47,20 @@ func main() {
 	}
 	log.Println("conectado ao SQL Server")
 
+	roteador := api.NewServer(db, sessao.NewStore(cfg.SessionTTL), cfg).Handler()
+
+	// CORS: libera o frontend (ALLOWED_ORIGIN) a chamar a API com o cookie de sessão.
+	cors := api.CORS(api.CORSConfig{
+		Origens:     cfg.AllowedOrigins,
+		Metodos:     []string{http.MethodGet, http.MethodPost, http.MethodDelete, http.MethodOptions},
+		Cabecalhos:  []string{"Content-Type"},
+		Credenciais: true,
+		MaxAge:      10 * time.Minute,
+	})
+
 	srv := &http.Server{
 		Addr:              cfg.Addr,
-		Handler:           api.NewServer(db, sessao.NewStore(cfg.SessionTTL), cfg).Handler(),
+		Handler:           cors(roteador),
 		ReadHeaderTimeout: 5 * time.Second,
 		ReadTimeout:       15 * time.Second,
 		WriteTimeout:      30 * time.Second,

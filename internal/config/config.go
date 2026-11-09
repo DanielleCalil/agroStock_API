@@ -5,6 +5,7 @@ import (
 	"errors"
 	"os"
 	"strconv"
+	"strings"
 	"time"
 )
 
@@ -14,9 +15,10 @@ type Config struct {
 	// String de conexão do SQL Server, ex:
 	// sqlserver://usuario:senha@localhost:1433?database=agrostock
 	DatabaseURL string
-	// Origem do frontend autorizada a chamar a API com cookies (CORS).
+	// Origens do frontend autorizadas a chamar a API com cookies (CORS).
+	// Lidas de ALLOWED_ORIGIN, separadas por vírgula.
 	// Vazio = CORS desativado (frontend servido pela mesma origem).
-	AllowedOrigin string
+	AllowedOrigins []string
 	// Marca o cookie de sessão como Secure (exige HTTPS). Use true em produção.
 	CookieSecure bool
 	// Tempo de vida de uma sessão.
@@ -29,10 +31,14 @@ type Config struct {
 
 func Load() (Config, error) {
 	cfg := Config{
-		Addr:          getenv("API_ADDR", ":8080"),
-		DatabaseURL:   os.Getenv("DATABASE_URL"),
-		AllowedOrigin: os.Getenv("ALLOWED_ORIGIN"),
-		SessionTTL:    8 * time.Hour,
+		Addr:        getenv("API_ADDR", ":8080"),
+		DatabaseURL: os.Getenv("DATABASE_URL"),
+		SessionTTL:  8 * time.Hour,
+	}
+	for _, o := range strings.Split(os.Getenv("ALLOWED_ORIGIN"), ",") {
+		if o = strings.TrimSpace(o); o != "" {
+			cfg.AllowedOrigins = append(cfg.AllowedOrigins, o)
+		}
 	}
 	if cfg.DatabaseURL == "" {
 		return cfg, errors.New("DATABASE_URL não definida (veja .env.example)")
