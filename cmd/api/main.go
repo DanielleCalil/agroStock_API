@@ -47,6 +47,14 @@ func main() {
 	}
 	log.Println("conectado ao SQL Server")
 
+	// Ajuda a diagnosticar 401 em produção: confira estas linhas no log do Render.
+	log.Printf("CORS: origens autorizadas = %q", cfg.AllowedOrigins)
+	if cfg.CookieSecure {
+		log.Println("cookie de sessão: Secure + SameSite=None (front e API em domínios diferentes)")
+	} else {
+		log.Println("cookie de sessão: SameSite=Lax, sem Secure (apenas desenvolvimento/mesmo site)")
+	}
+
 	roteador := api.NewServer(db, sessao.NewStore(cfg.SessionTTL), cfg).Handler()
 
 	// CORS: libera o frontend (ALLOWED_ORIGIN) a chamar a API com o cookie de sessão.

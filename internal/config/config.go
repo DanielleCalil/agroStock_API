@@ -21,7 +21,8 @@ type Config struct {
 	AllowedOrigins []string
 	// Marca o cookie de sessão como Secure e SameSite=None (exige HTTPS;
 	// permite front e API em domínios diferentes). Use true em produção.
-	// Com false, o cookie usa SameSite=Lax.
+	// Com false, o cookie usa SameSite=Lax. Se COOKIE_SECURE não for definido,
+	// vira true automaticamente quando alguma origem em ALLOWED_ORIGIN é https.
 	CookieSecure bool
 	// Tempo de vida de uma sessão.
 	SessionTTL time.Duration
@@ -51,6 +52,16 @@ func Load() (Config, error) {
 			return cfg, errors.New("COOKIE_SECURE deve ser true ou false")
 		}
 		cfg.CookieSecure = b
+	} else {
+		// Sem COOKIE_SECURE definido: se o frontend autorizado usa HTTPS
+		// (ex: Vercel), a API está em produção e em outro domínio, então o
+		// cookie precisa de Secure + SameSite=None para ser enviado.
+		for _, o := range cfg.AllowedOrigins {
+			if strings.HasPrefix(o, "https://") {
+				cfg.CookieSecure = true
+				break
+			}
+		}
 	}
 	if v := os.Getenv("SESSION_TTL"); v != "" {
 		d, err := time.ParseDuration(v)
