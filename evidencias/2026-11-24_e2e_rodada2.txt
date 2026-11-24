@@ -1,0 +1,60 @@
+# E2E AgroStock API | 2026-11-24 19:57:12 -0300 | base http://localhost:8080 | commit 8164471
+E01    | Health check                                                   | esperado 200  | obtido 200  | PASSOU
+         resposta: {"status":"ok"}
+E02    | Acesso a /saldos sem sessao e negado                           | esperado 401  | obtido 401  | PASSOU
+         resposta: {"erro":"não autenticado"}
+E03    | Cadastro de usuario valido                                     | esperado 201  | obtido 201  | PASSOU
+         resposta: {"id":7,"login":"e2e_1795561032"}
+E04    | Cadastro com login duplicado e rejeitado                       | esperado 409  | obtido 409  | PASSOU
+         resposta: {"erro":"já existe um usuário com este login"}
+E05    | Login com senha errada                                         | esperado 401  | obtido 401  | PASSOU
+         resposta: {"erro":"login ou senha inválidos"}
+E06    | Login valido cria sessao (cookie)                              | esperado 200  | obtido 200  | PASSOU
+         resposta: {"id":7,"login":"e2e_1795561032"}
+E07    | Consulta da sessao atual                                       | esperado 200  | obtido 200  | PASSOU
+         resposta: {"id":7,"login":"e2e_1795561032"}
+E08    | Cadastro de insumo valido                                      | esperado 201  | obtido 201  | PASSOU
+         resposta: {"id":2,"nome":"E2E-Semente Milho","categoria":"Sementes","unidade":"kg","minimo":50}
+E09    | Cadastro de insumo sem nome e rejeitado                        | esperado 422  | obtido 422  | PASSOU
+         resposta: {"erro":"nome é obrigatório"}
+E10    | Listagem de insumos                                            | esperado 200  | obtido 200  | PASSOU
+         resposta: [{"id":1,"nome":"E2E-Semente Milho","categoria":"Sementes","unidade":"kg","minimo":50},{"id":2,"nome":"E2E-Semente Milho","categoria":"Sementes","unidade":"kg","minimo":50}]
+E11    | Cadastro de lote (validade em 10 dias)                         | esperado 201  | obtido 201  | PASSOU
+         resposta: {"id":3,"insumoId":2,"codigo":"E2E-L1795561032","validade":"2026-12-04","saldo":0}
+E12    | Lote com codigo duplicado no insumo                            | esperado 409  | obtido 409  | PASSOU
+         resposta: {"erro":"já existe um lote com este código para este insumo"}
+E13    | Lote com data invalida e rejeitado                             | esperado 422  | obtido 422  | PASSOU
+         resposta: {"erro":"validade deve estar no formato AAAA-MM-DD e ser uma data real"}
+E14    | Entrada de 100 kg no lote                                      | esperado 201  | obtido 201  | PASSOU
+         resposta: {"id":3,"loteId":3,"usuarioId":7,"tipo":"E","quantidade":100,"instante":"2026-11-24T19:57:14","motivo":"compra","chaveRequisicao":"e2e-1795561032-1","saldoLote":100}
+E15    | Reenvio idempotente (mesma chave e corpo)                      | esperado 200  | obtido 200  | PASSOU
+         resposta: {"id":3,"loteId":3,"usuarioId":7,"tipo":"E","quantidade":100,"instante":"2026-11-24T19:57:14","motivo":"compra","chaveRequisicao":"e2e-1795561032-1"}
+E16    | Mesma chave com dados diferentes e rejeitada                   | esperado 409  | obtido 409  | PASSOU
+         resposta: {"erro":"chaveRequisicao já utilizada em outra movimentação"}
+E17    | Saida de 30 kg                                                 | esperado 201  | obtido 201  | PASSOU
+         resposta: {"id":4,"loteId":3,"usuarioId":7,"tipo":"S","quantidade":30,"instante":"2026-11-24T19:57:14","motivo":null,"chaveRequisicao":"e2e-1795561032-2","saldoLote":70}
+         saldoLote apos saida: 70 (esperado 70)
+E18    | Saida maior que o saldo e bloqueada                            | esperado 409  | obtido 409  | PASSOU
+         resposta: {"erro":"saldo insuficiente no lote","saldoDisponivel":70,"solicitado":1000}
+E19    | Quantidade zero e rejeitada                                    | esperado 422  | obtido 422  | PASSOU
+         resposta: {"erro":"quantidade deve ser maior que 0"}
+E20    | Historico de movimentacoes                                     | esperado 200  | obtido 200  | PASSOU
+         resposta: [{"id":4,"loteId":3,"loteCodigo":"E2E-L1795561032","insumoId":2,"insumoNome":"E2E-Semente Milho","unidade":"kg","usuarioId":7,"usuarioLogin":"e2e_1795561032","tipo":"S","quantidade":30,"instante":"2026-11-24T19:57:14","motivo":null,"chaveRequisicao":"e2e-1795561032-2","saldoLote":70},{"id":3,"loteId
+E21    | Saldos por insumo/lote                                         | esperado 200  | obtido 200  | PASSOU
+         resposta: [{"insumoId":1,"nome":"E2E-Semente Milho","categoria":"Sementes","unidade":"kg","minimo":50,"saldoTotal":70,"abaixoMinimo":false,"lotes":[{"loteId":1,"codigo":"E2E-L1795561018","validade":"2026-12-04","saldo":70}]},{"insumoId":2,"nome":"E2E-Semente Milho","categoria":"Sementes","unidade":"kg","minim
+E22    | Alertas de validade                                            | esperado 200  | obtido 200  | PASSOU
+         resposta: {"dataReferencia":"2026-11-24","alertas":[{"loteId":1,"loteCodigo":"E2E-L1795561018","insumoId":1,"insumoNome":"E2E-Semente Milho","unidade":"kg","saldo":70,"validade":"2026-12-04","diasRestantes":10,"vencido":false,"nivel":"amarelo"},{"loteId":3,"loteCodigo":"E2E-L1795561032","insumoId":2,"insumoNo
+         lote E2E-L1795561032 aparece nos alertas (vence em 10 dias)
+E23    | Esqueci a senha (token em modo dev)                            | esperado 200  | obtido 200  | PASSOU
+         resposta: {"expiraEmMinutos":30,"mensagem":"Se o e-mail estiver cadastrado, você receberá instruções para redefinir sua senha.","tokenRedefinicao":"kdzBfQfw9LbJFX9pqW51z1knykIs50rS-XK0tntqiA0"}
+E24    | Redefinir senha com token valido                               | esperado 200  | obtido 200  | PASSOU
+         resposta: {"mensagem":"Senha redefinida com sucesso."}
+E25    | Reuso do mesmo token e rejeitado                               | esperado 400  | obtido 400  | PASSOU
+         resposta: {"erro":"token inválido ou expirado"}
+E26    | Logout encerra a sessao                                        | esperado 204  | obtido 204  | PASSOU
+         resposta: 
+E27    | Apos logout, rota protegida nega acesso                        | esperado 401  | obtido 401  | PASSOU
+         resposta: {"erro":"não autenticado"}
+E28    | Login com a nova senha                                         | esperado 200  | obtido 200  | PASSOU
+         resposta: {"id":7,"login":"e2e_1795561032"}
+# Resultado: 28 passaram, 0 falharam

@@ -1,0 +1,93 @@
+# Execução: 2026-11-24 19:56:12 -0300 | commit 8164471 | go version go1.26.3 windows/amd64
+	github.com/DanielleCalil/agroStock_API/cmd/api		coverage: 0.0% of statements
+	github.com/DanielleCalil/agroStock_API/cmd/criar-usuario		coverage: 0.0% of statements
+=== RUN   TestAtributosCookieSessao
+--- PASS: TestAtributosCookieSessao (0.00s)
+=== RUN   TestCORSOrigemPermitida
+--- PASS: TestCORSOrigemPermitida (0.00s)
+=== RUN   TestCORSOrigemNegada
+--- PASS: TestCORSOrigemNegada (0.00s)
+=== RUN   TestCORSPreflight
+--- PASS: TestCORSPreflight (0.00s)
+=== RUN   TestCORSPreflightOrigemNegada
+--- PASS: TestCORSPreflightOrigemNegada (0.00s)
+=== RUN   TestCORSSemOrigin
+--- PASS: TestCORSSemOrigin (0.00s)
+=== RUN   TestClassificarValidade
+--- PASS: TestClassificarValidade (0.00s)
+=== RUN   TestDiasEntreIgnoraHorario
+--- PASS: TestDiasEntreIgnoraHorario (0.00s)
+=== RUN   TestValidarInsumo
+--- PASS: TestValidarInsumo (0.00s)
+=== RUN   TestValidarLote
+--- PASS: TestValidarLote (0.00s)
+=== RUN   TestValidarMovimentacao
+--- PASS: TestValidarMovimentacao (0.00s)
+=== RUN   TestRotasProtegidasExigemSessao
+2026/11/24 19:56:14 GET /saldos -> 401 (0s)
+2026/11/24 19:56:14 GET /saldos -> 401 (0s)
+2026/11/24 19:56:14 GET /alertas -> 401 (0s)
+2026/11/24 19:56:14 GET /alertas -> 401 (0s)
+2026/11/24 19:56:14 GET /movimentacoes -> 401 (0s)
+2026/11/24 19:56:14 GET /movimentacoes -> 401 (0s)
+2026/11/24 19:56:14 POST /movimentacoes -> 401 (0s)
+2026/11/24 19:56:14 POST /movimentacoes -> 401 (0s)
+2026/11/24 19:56:14 POST /insumos -> 401 (0s)
+2026/11/24 19:56:14 POST /insumos -> 401 (0s)
+2026/11/24 19:56:14 POST /lotes -> 401 (0s)
+2026/11/24 19:56:14 POST /lotes -> 401 (0s)
+2026/11/24 19:56:14 GET /insumos -> 401 (0s)
+2026/11/24 19:56:14 GET /insumos -> 401 (0s)
+2026/11/24 19:56:14 GET /lotes -> 401 (0s)
+2026/11/24 19:56:14 GET /lotes -> 401 (0s)
+2026/11/24 19:56:14 GET /sessao -> 401 (0s)
+2026/11/24 19:56:14 GET /sessao -> 401 (0s)
+2026/11/24 19:56:14 DELETE /sessao -> 401 (0s)
+2026/11/24 19:56:14 DELETE /sessao -> 401 (0s)
+--- PASS: TestRotasProtegidasExigemSessao (0.01s)
+=== RUN   TestLoginExigeJSON
+2026/11/24 19:56:14 POST /sessao -> 415 (0s)
+--- PASS: TestLoginExigeJSON (0.00s)
+=== RUN   TestValidarUsuario
+--- PASS: TestValidarUsuario (0.00s)
+=== RUN   TestCadastroUsuarioValidaAntesDoBanco
+2026/11/24 19:56:14 POST /usuarios -> 415 (1ms)
+2026/11/24 19:56:14 POST /usuarios -> 422 (0s)
+2026/11/24 19:56:14 POST /usuarios -> 422 (0s)
+2026/11/24 19:56:14 POST /usuarios -> 400 (0s)
+--- PASS: TestCadastroUsuarioValidaAntesDoBanco (0.00s)
+=== RUN   TestPreflightCORS
+2026/11/24 19:56:14 GET /alertas -> 401 (0s)
+--- PASS: TestPreflightCORS (0.00s)
+=== RUN   TestRotasDeSenhaSaoPublicasEValidam
+2026/11/24 19:56:14 POST /senha/esqueci -> 422 (0s)
+2026/11/24 19:56:14 POST /senha/redefinir -> 422 (0s)
+2026/11/24 19:56:14 POST /senha/redefinir -> 422 (0s)
+--- PASS: TestRotasDeSenhaSaoPublicasEValidam (0.00s)
+=== RUN   TestTokenSenhaGuardaSoOHash
+--- PASS: TestTokenSenhaGuardaSoOHash (0.00s)
+PASS
+coverage: 31.3% of statements
+ok  	github.com/DanielleCalil/agroStock_API/internal/api	1.064s	coverage: 31.3% of statements
+=== RUN   TestCookieSecureAutomatico
+=== RUN   TestCookieSecureAutomatico/front_https_sem_COOKIE_SECURE
+=== RUN   TestCookieSecureAutomatico/front_http_sem_COOKIE_SECURE
+=== RUN   TestCookieSecureAutomatico/COOKIE_SECURE=false_explícito_vence
+=== RUN   TestCookieSecureAutomatico/COOKIE_SECURE=true_explícito
+--- PASS: TestCookieSecureAutomatico (0.00s)
+    --- PASS: TestCookieSecureAutomatico/front_https_sem_COOKIE_SECURE (0.00s)
+    --- PASS: TestCookieSecureAutomatico/front_http_sem_COOKIE_SECURE (0.00s)
+    --- PASS: TestCookieSecureAutomatico/COOKIE_SECURE=false_explícito_vence (0.00s)
+    --- PASS: TestCookieSecureAutomatico/COOKIE_SECURE=true_explícito (0.00s)
+PASS
+coverage: 62.1% of statements
+ok  	github.com/DanielleCalil/agroStock_API/internal/config	0.509s	coverage: 62.1% of statements
+=== RUN   TestCriarBuscarRemover
+--- PASS: TestCriarBuscarRemover (0.00s)
+=== RUN   TestSessaoExpira
+--- PASS: TestSessaoExpira (0.00s)
+=== RUN   TestTokensUnicos
+--- PASS: TestTokensUnicos (0.00s)
+PASS
+coverage: 90.0% of statements
+ok  	github.com/DanielleCalil/agroStock_API/internal/sessao	0.489s	coverage: 90.0% of statements
