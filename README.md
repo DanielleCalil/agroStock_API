@@ -75,3 +75,7 @@ e use `Content-Type: application/json` nos POSTs.
 
 Sempre no formato `{"erro": "mensagem"}`: 400 (requisição malformada), 401, 404,
 409 (duplicidade/saldo), 415 (Content-Type), 422 (validação), 500.
+
+## Autoria
+
+Desenvolvido por Danielle Couto Calil.
